@@ -21,7 +21,7 @@ public class DBUtil {
         try
         {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String connectionUrl = "jdbc:sqlserver://localhost:1433;"+"databaseName=PlaneManagement;"+"user=bac;"+"password=bac230789";
+            String connectionUrl = "jdbc:sqlserver://localhost:2261;"+"databaseName=PlaneManagement;"+"user=sa;"+"password=123456789";
             conn = DriverManager.getConnection(connectionUrl);
             System.out.println("Connected");
         }

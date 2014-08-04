@@ -6,14 +6,15 @@
 
 package Customer;
 
-import Customer.CustomerDAO;
 import Customer.Customer;
+import Customer.CustomerDAO;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
 /**
@@ -125,6 +126,7 @@ public class CustomerBean{
                 selectedRow = cus;
                 disable = true;
                 add = false;
+                RequestContext.getCurrentInstance().execute("PF('dlgadd').close()");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

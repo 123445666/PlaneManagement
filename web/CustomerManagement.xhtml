@@ -135,7 +135,7 @@
                                 <f:selectItem itemLabel="Disable" itemValue="0"/>
                             </p:selectOneMenu>
                         </h:panelGrid>
-                        <p:commandButton id="btnsubmit1" value="Lưu lại" style="width: 100px" actionListener="#{customerBean.submit()}" onclick="dlgadd.close()" update=":form_detail:pn_01,:growl"/>
+                        <p:commandButton id="btnsubmit1" value="Lưu lại" style="width: 100px" actionListener="#{customerBean.submit()}" update=":form_detail:pn_01,:growl"/>
                         <p:commandButton id="btnreset1" value="Hủy" style="width: 100px" actionListener="#{customerBean.reSet()}" update=":frm_customer_add:pg_add_01"/>
                     </h:form>
                 </p:dialog>
