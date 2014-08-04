@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <!--xmlns:pe="http://primefaces.org/ui/extensions">-->
+    <h:head>
+        <title>JSF in VTCA</title>
+        <!--<h:outputStylesheet library="css" name="cssLayout.css"/>-->
+    </h:head>
+    <h:body>
+        <ui:composition template="./template.xhtml">
+            <ui:define name="content">
+                <p:growl id="growl" autoUpdate="true" showDetail="true"/>
+                <h:form id="form_detail">
+                    <p:panel id="pn_01" style="width: 610px;background: azure;alignment-adjust: central">
+                        <p:commandButton id="btnUpdate" value="Sửa" style="width: 100px" actionListener="#{userBean.updateclick()}" oncomplete="dlgedit.show()" update=":frm_user_edit:pg_edit_01">
+                        </p:commandButton>
+                        <p:commandButton id="btnsubmit2" value="Thêm" style="width: 100px" actionListener="#{userBean.clearValue()}" oncomplete="dlgadd.show()" update=":frm_user_add:pg_add_01"/>
+                        <p:commandButton id="btnDelete" value="Xóa" style="width: 100px" icon="ui-icon-script" onclick="id_dg.show()"  >
+                        </p:commandButton>
+                        <p:dataTable rowIndexVar="rowIndex" var="us2" value="#{userBean.ls_user_all}"
+                                     emptyMessage="Chưa có bản ghi nào" id="dt_table"
+                                     selectionMode="single" selection="#{userBean.selectedRow}"
+                                     rowKey="#{us2.username}" paginator="true" rows="5"
+                                     style="margin-top: 10px" >
+                            <p:ajax listener="#{userBean.onRowSelect}" event="rowSelect" />
+                            <f:facet name="header">  
+                                Danh sách người dùng
+                            </f:facet>
+                            <p:column style="width: 50px">
+                                <f:facet name="header">
+                                    STT
+                                </f:facet>
+                                <h:outputText value="#{rowIndex+1}" />
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    User Name
+                                </f:facet>
+                                <h:outputText value="#{us2.username}"/>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    ID Customer
+                                </f:facet>
+                                <h:outputText value="#{us2.idCustomer}"/>
+                            </p:column>  
+                            <p:column>
+                                <f:facet name="header">
+                                    Status
+                                </f:facet>
+                                <h:outputText value="#{userBean.showUserStatus(us2.status)}"/>
+                            </p:column>  
+                        </p:dataTable>
+                    </p:panel>
+                    <p:confirmDialog id="dg" message="Bạn có chắc chắn muốn xóa người dùng này không?" widgetVar="id_dg" showEffect="fade" hideEffect="explode">
+                        <p:commandButton value="Yes"  actionListener="#{userBean.delete()}" oncomplete="id_dg.hide()" update=":form_detail:pn_01"/>
+                        <p:commandButton value="No"  styleClass="ui-confirmdialog-no" icon="ui-icon-close" oncomplete="id_dg.hide()" />
+                    </p:confirmDialog>
+                </h:form>
+
+                <p:dialog id="useredit" header="Thay đổi thông tin người dùng" widgetVar="dlgedit" showEffect="explode" hideEffect="bounce" height="100">
+                    <h:form id="frm_user_edit">
+                        <h:panelGrid columns="4" id="pg_edit_01" style="alignment-adjust: central">
+                            <h:outputLabel value="Username:*"/>
+                            <p:inputText id="uname1" value="#{userBean.user.username}" 
+                                         size="20">
+                            </p:inputText>
+                            <h:outputLabel value="Password:*"/>
+                            <p:password id="pass1" value="#{userBean.user.password}"></p:password>
+                            <h:outputLabel value="ID Customer:"/>
+                            <p:inputText id="IdCus1" value="#{userBean.user.idCustomer}" 
+                                         size="20">
+                            </p:inputText>
+                            <h:outputLabel value="Status:"/>
+                            <p:selectOneMenu id="status1" value="#{userBean.status}" effect="fade" editable="true">
+                                <f:selectItem itemLabel="Enable" itemValue="1"/>
+                                <f:selectItem itemLabel="Disable" itemValue="0"/>
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                        <p:commandButton id="btnsubmit1" value="Lưu lại" style="width: 100px" actionListener="#{userBean.submit()}" onclick="dlgedit.close()" update=":form_detail:pn_01,:growl"/>
+                        <p:commandButton id="btnreset1" value="Hủy" style="width: 100px" actionListener="#{userBean.reSet()}" update=":frm_user_edit:pg_edit_01" onclick="dlgedit.hide()"/>
+                    </h:form>
+                </p:dialog>
+                <p:dialog id="useradd" header="Thêm người dùng mới" widgetVar="dlgadd" showEffect="explode" hideEffect="explode" height="100">
+                    <h:form id="frm_user_add">
+                        <h:panelGrid columns="4" id="pg_add_01" style="alignment-adjust: central">
+                            <h:outputLabel value="Username:*"/>
+                            <p:inputText id="uname" value="#{userBean.user.username}" 
+                                         size="20">
+                            </p:inputText>
+                            <h:outputLabel value="Password:*"/>
+                            <p:password id="pass" value="#{userBean.user.password}"></p:password>
+                            <h:outputLabel value="ID Customer:"/>
+                            <p:inputText id="IdCus" value="#{userBean.user.idCustomer}" 
+                                         size="20">
+                            </p:inputText>
+                            <h:outputLabel value="Status:"/>
+                            <p:selectOneMenu id="status" value="#{userBean.status}" effect="fade" editable="true">
+                                <f:selectItem itemLabel="Enable" itemValue="1"/>
+                                <f:selectItem itemLabel="Disable" itemValue="0"/>
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                        <p:commandButton id="btnsubmit" value="Lưu lại" style="width: 100px" actionListener="#{userBean.submit()}" onclick="dlgadd.close()" update=":form_detail:pn_01,:growl"/>
+                        <p:commandButton id="btnreset" value="Hủy" style="width: 100px" actionListener="#{userBean.reSet()}" update=":frm_user_add:pg_add_01"/>
+                    </h:form>
+                </p:dialog>
+            </ui:define>
+        </ui:composition>
+    </h:body>   
+</html>
+

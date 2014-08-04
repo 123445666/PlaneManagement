@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <!--xmlns:pe="http://primefaces.org/ui/extensions">-->
+    <h:head>
+        <title>JSF in VTCA</title>
+        <!--<h:outputStylesheet library="css" name="cssLayout.css"/>-->
+    </h:head>
+    <h:body>
+        <ui:composition template="./template.xhtml">
+            <ui:define name="content">
+                <p:growl id="growl" autoUpdate="true" showDetail="true"/>
+                <h:form id="form_detail">
+                    <p:panel id="pn_01" style="width: 910px;background: azure;alignment-adjust: central">
+                        <p:commandButton id="btnUpdate" value="Sửa" style="width: 100px" actionListener="#{customerBean.updateclick()}" oncomplete="dlgedit.show()" update=":frm_customer_edit:pg_edit_01">
+                        </p:commandButton>
+                        <p:commandButton id="btnsubmit2" value="Thêm" style="width: 100px" actionListener="#{customerBean.clearValue()}" oncomplete="dlgadd.show()" update=":frm_customer_add:pg_add_01"/>
+                        <p:commandButton id="btnDelete" value="Xóa" style="width: 100px" icon="ui-icon-script" onclick="id_dg.show()"  >
+                        </p:commandButton>
+                        <p:dataTable rowIndexVar="rowIndex" var="cus2" value="#{customerBean.ls_cus}"
+                                     emptyMessage="Chưa có bản ghi nào" id="dt_table"
+                                     selectionMode="single" selection="#{customerBean.selectedRow}"
+                                     rowKey="#{cus2.id}" paginator="true" rows="10"
+                                     style="margin-top: 10px" >
+                            <p:ajax listener="#{customerBean.onRowSelect}" event="rowSelect" />
+                            <f:facet name="header">  
+                                Danh sách khách hàng
+                            </f:facet>
+                            <p:column style="width: 50px">
+                                <f:facet name="header">
+                                    STT
+                                </f:facet>
+                                <h:outputText value="#{rowIndex+1}" style="alignment-adjust: central"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    Name
+                                </f:facet>
+                                <h:outputText value="#{cus2.name}"/>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    Identity No
+                                </f:facet>
+                                <h:outputText value="#{cus2.identityNo}"/>
+                            </p:column>  
+                            <p:column>
+                                <f:facet name="header">
+                                    Birthday
+                                </f:facet>
+                                <h:outputText value="#{customerBean.convertDateToString(cus2.birthday)}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    Phone
+                                </f:facet>
+                                <h:outputText value="#{cus2.phone}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    Email
+                                </f:facet>
+                                <h:outputText value="#{cus2.email}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    Status
+                                </f:facet>
+                                <h:outputText value="#{customerBean.showCustomerStatus(cus2.status)}"/>
+                            </p:column>  
+                        </p:dataTable>
+                    </p:panel>
+                    <p:confirmDialog id="dg" message="Bạn có chắc chắn muốn xóa khách hàng này không?" widgetVar="id_dg" showEffect="fade" hideEffect="explode">
+                        <p:commandButton value="Yes"  actionListener="#{customerBean.delete()}" oncomplete="id_dg.hide()" update=":form_detail:pn_01"/>
+                        <p:commandButton value="No"  styleClass="ui-confirmdialog-no" icon="ui-icon-close" oncomplete="id_dg.hide()" />
+                    </p:confirmDialog>
+                </h:form>
+
+                <p:dialog id="customeredit" header="Thay đổi thông tin khách hàng" widgetVar="dlgedit" showEffect="explode" hideEffect="bounce" height="150">
+                    <h:form id="frm_customer_edit">
+                        <h:panelGrid columns="4" id="pg_edit_01" style="alignment-adjust: central">
+                            <h:outputLabel value="Name:*"/>
+                            <p:inputText id="name" value="#{customerBean.cus.name}" 
+                                         size="20">
+                            </p:inputText>
+                            <h:outputLabel value="Identity No:*"/>
+                            <p:inputText id="identityNo" value="#{customerBean.cus.identityNo}"></p:inputText>
+                            <h:outputLabel value="Birthday:"/>
+                            <p:calendar id="birthday" value="#{customerBean.cus.birthday}"></p:calendar>
+                            <h:outputLabel value="Phone:"/>
+                            <p:inputText id="phone" value="#{customerBean.cus.phone}" 
+                                         size="20">
+                            </p:inputText>
+                            <h:outputLabel value="Email:"/>
+                            <p:inputText id="email" value="#{customerBean.cus.email}" 
+                                         size="20">
+                            </p:inputText>
+                            <h:outputLabel value="Status:"/>
+                            <p:selectOneMenu id="status" value="#{customerBean.status}" effect="fade" editable="true">
+                                <f:selectItem itemLabel="Enable" itemValue="1"/>
+                                <f:selectItem itemLabel="Disable" itemValue="0"/>
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                        <p:commandButton id="btnsubmit" value="Lưu lại" style="width: 100px" actionListener="#{customerBean.submit()}" onclick="dlgedit.close()" update=":form_detail:pn_01,:growl"/>
+                        <p:commandButton id="btnreset" value="Hủy" style="width: 100px" actionListener="#{customerBean.reSet()}" update=":frm_customer_edit:pg_edit_01" onclick="dlgedit.hide()"/>
+                    </h:form>
+                </p:dialog>
+                <p:dialog id="customeradd" header="Thêm khách hàng mới" widgetVar="dlgadd" showEffect="explode" hideEffect="explode" height="150">
+                    <h:form id="frm_customer_add">
+                        <h:panelGrid columns="4" id="pg_add_01" style="alignment-adjust: central">
+                            <h:outputLabel value="Name:*"/>
+                            <p:inputText id="name1" value="#{customerBean.cus.name}" 
+                                         size="20">
+                            </p:inputText>
+                            <h:outputLabel value="Identity No:*"/>
+                            <p:inputText id="identityNo1" value="#{customerBean.cus.identityNo}"></p:inputText>
+                            <h:outputLabel value="Birthday:"/>
+                            <p:calendar id="birthday1" value="#{customerBean.cus.birthday}"></p:calendar>
+                            <h:outputLabel value="Phone:"/>
+                            <p:inputText id="phone1" value="#{customerBean.cus.phone}" 
+                                         size="20">
+                            </p:inputText>
+                            <h:outputLabel value="Email:"/>
+                            <p:inputText id="email1" value="#{customerBean.cus.email}" 
+                                         size="20">
+                            </p:inputText>
+                            <h:outputLabel value="Status:"/>
+                            <p:selectOneMenu id="status1" value="#{customerBean.status}" effect="fade" editable="true">
+                                <f:selectItem itemLabel="Enable" itemValue="1"/>
+                                <f:selectItem itemLabel="Disable" itemValue="0"/>
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                        <p:commandButton id="btnsubmit1" value="Lưu lại" style="width: 100px" actionListener="#{customerBean.submit()}" onclick="dlgadd.close()" update=":form_detail:pn_01,:growl"/>
+                        <p:commandButton id="btnreset1" value="Hủy" style="width: 100px" actionListener="#{customerBean.reSet()}" update=":frm_customer_add:pg_add_01"/>
+                    </h:form>
+                </p:dialog>
+            </ui:define>
+        </ui:composition>
+    </h:body>   
+</html>
+
