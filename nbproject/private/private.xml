@@ -3,12 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/F:/Users/PDBac/Documents/Netbean%20Project/PlaneManagement/src/java/Database/DBUtil.java</file>
-            <file>file:/F:/Users/PDBac/Documents/Netbean%20Project/PlaneManagement/web/CustomerManagement.xhtml</file>
-            <file>file:/F:/Users/PDBac/Documents/Netbean%20Project/PlaneManagement/src/java/Users/UserBean.java</file>
-            <file>file:/F:/Users/PDBac/Documents/Netbean%20Project/PlaneManagement/src/java/Customer/CustomerDAO.java</file>
-            <file>file:/F:/Users/PDBac/Documents/Netbean%20Project/PlaneManagement/src/java/Customer/Customer.java</file>
-            <file>file:/F:/Users/PDBac/Documents/Netbean%20Project/PlaneManagement/src/java/Customer/CustomerBean.java</file>
+            <file>file:/F:/Project/PlaneManagement/src/java/Customer/CustomerBean.java</file>
+            <file>file:/F:/Project/PlaneManagement/web/CustomerManagement.xhtml</file>
+            <file>file:/F:/Project/PlaneManagement/web/PlaneManagement.xhtml</file>
         </group>
     </open-files>
 </project-private>

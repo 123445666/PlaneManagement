@@ -4,10 +4,12 @@
  * and open the template in the editor.
  */
 
-package Customer;
+package Plane;
 
-import Customer.Customer;
-import Customer.CustomerDAO;
+import javax.inject.Named;
+import javax.enterprise.context.Dependent;
+import Plane.Plane;
+import Plane.PlaneDAO;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.faces.application.FacesMessage;
@@ -16,28 +18,27 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
-
 /**
  *
- * @author PDBac
+ * @author aFun
  */
 @ManagedBean
 @ViewScoped
-public class CustomerBean{
+public class PlaneBean {
 
     /**
-     * Creates a new instance of CustomerBean
+     * Creates a new instance of PlaneBean
      */
-    public CustomerBean() {
+    public PlaneBean() {
         try
         {
-            cusDAO = new CustomerDAO();
-            ls_cus = cusDAO.getData();
-            if(!ls_cus.isEmpty())
+            planmbDAO = new PlaneDAO();
+            ls_planmb = planmbDAO.getData();
+            if(!ls_planmb.isEmpty())
             {
-                cus = ls_cus.get(0);
-                selectedRow = cus;
-                if(cus.getStatus()==1)
+                planmb = ls_planmb.get(0);
+                selectedRow = planmb;
+                if(planmb.getStatus()==1)
                 {
                     Status = "Enable";
                 } else 
@@ -50,13 +51,13 @@ public class CustomerBean{
             ex.printStackTrace();
         }
     }
-    private Customer cus;
-    private CustomerDAO cusDAO;
+    private Plane planmb;
+    private PlaneDAO planmbDAO;
     private Boolean add = false;
     private Boolean update = false;
     private Boolean isDisable = false;
-    private Customer selectedRow;
-    private List<Customer> ls_cus;
+    private Plane selectedRow;
+    private List<Plane> ls_planmb;
     private String Status;
 
     public String getStatus() {
@@ -65,16 +66,15 @@ public class CustomerBean{
 
     public void setStatus(String Status) {
         this.Status = Status;
-    }
-    
+    }   
 
-    public Customer getCus() {
-        return cus;
+    public Plane getPlanmb() {
+        return planmb;
     }
 
-    public void setCus(Customer cus) {
-        this.cus = cus;
-    }
+    public void setPlanmb(Plane planmb) {
+        this.planmb = planmb;
+    }    
 
     public Boolean getIsDisable() {
         return isDisable;
@@ -84,25 +84,25 @@ public class CustomerBean{
         this.isDisable = isDisable;
     }
 
-    public Customer getSelectedRow() {
+    public Plane getSelectedRow() {
         return selectedRow;
     }
 
-    public void setSelectedRow(Customer selectedRow) {
+    public void setSelectedRow(Plane selectedRow) {
         this.selectedRow = selectedRow;
     }
 
-    public List<Customer> getLs_cus() {
-        return ls_cus;
+    public List<Plane> getLs_planmb() {
+        return ls_planmb;
     }
 
-    public void setLs_cus(List<Customer> ls_cus) {
-        this.ls_cus = ls_cus;
+    public void setLs_planmb(List<Plane> ls_planmb) {
+        this.ls_planmb = ls_planmb;
     }
     public void onRowSelect(SelectEvent event) {
         try {
-            cus = (Customer) event.getObject();
-            if(cus.getStatus()==1)
+            planmb = (Plane) event.getObject();
+            if(planmb.getStatus()==1)
             {
                 Status = "Enable";
             } else 
@@ -118,15 +118,14 @@ public class CustomerBean{
     public void add() {
         if (validator()) {
             try {
-                cusDAO = new CustomerDAO();
-                cusDAO.insert(cus);
+                planmbDAO = new PlaneDAO();
+                planmbDAO.insert(planmb);
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO, "Summary", "Thêm thành công!"));
-                ls_cus.add(cus);
-                selectedRow = cus;
+                ls_planmb.add(planmb);
+                selectedRow = planmb;
                 disable = true;
                 add = false;
-                RequestContext.getCurrentInstance().execute("refresh();");
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -137,14 +136,14 @@ public class CustomerBean{
     public void update() {
         if (validator()) {
             try {
-                cusDAO = new CustomerDAO();
-                cusDAO.update(cus);
+                planmbDAO = new PlaneDAO();
+                planmbDAO.update(planmb);
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_INFO, "Summary", "Sửa thành công!"));
                 int i = 0;
-                for (Customer cus1 : ls_cus) {
-                    if (cus1.getId()==(cus.getId())) {
-                        ls_cus.set(i, cus);
+                for (Plane planmb1 : ls_planmb) {
+                    if (planmb1.getId()==(planmb.getId())) {
+                        ls_planmb.set(i, planmb);
                         disable = true;
                         update = false;
                         break;
@@ -159,17 +158,17 @@ public class CustomerBean{
 
     public void delete() {
         try {
-            cusDAO = new CustomerDAO();
-            cusDAO.delete(cus);
+            planmbDAO = new PlaneDAO();
+            planmbDAO.delete(planmb);
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO, "Summary", "Xóa thành công!"));
             int i = 0;
-            for (Customer cus1 : ls_cus) {
-                if (cus1.getId()==(cus.getId())) {
-                    ls_cus.remove(i);
-                    if (!ls_cus.isEmpty()) {
-                        cus = ls_cus.get(i - 1);
-                        selectedRow = cus;
+            for (Plane planmb1 : ls_planmb) {
+                if (planmb1.getId()==(planmb.getId())) {
+                    ls_planmb.remove(i);
+                    if (!ls_planmb.isEmpty()) {
+                        planmb = ls_planmb.get(i - 1);
+                        selectedRow = planmb;
 
                     }
                     disable = true;
@@ -185,37 +184,25 @@ public class CustomerBean{
     }
 
     private boolean validator() {
-        if (cus.getName().equals("")) {
+        if (planmb.getType().equals("")) {
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Summary", "Tên không được để trống!"));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Summary", "Kiểu không được để trống!"));
             return false;
-        } else if (cus.getName().length() > 50) {
+        } else if (planmb.getColor().equals("")) {
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Summary", "Tên không được quá 50 ký tự!"));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Summary", "Màu không được quá 50 ký tự!"));
             return false;
-        } else if (cus.getIdentityNo().equals("")) {
+        } else if (planmb.getDescription().equals("")) {
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Summary", "Số chứng minh thư không được để trống!"));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Summary", "Mô tả không được để trống!"));
             return false;
-        } else if (cus.getIdentityNo().length() > 12) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Summary", "Số chứng minh thư không được quá 12 ký tự!"));
-            return false;
-        } else if (cus.getPhone().length() > 15) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Summary", "Số điện thoại không được quá 15 ký tự!"));
-            return false;
-        } else if (cus.getEmail().length() > 50) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Summary", "Email không được quá 50 ký tự!"));
-            return false;
-        }
+        } 
         return true;
     }
 
     public void clearValue() {
         disableUname();
-        cus = new Customer();
+        planmb = new Plane();
         isDisable = true;
         add = true;
 
@@ -228,7 +215,7 @@ public class CustomerBean{
         return t;
     }
 
-    public String showCustomerStatus(Integer status) {
+    public String showPlaneStatus(Integer status) {
         String t = "";
         if (status == 1) {
             t = "Enable";
@@ -258,7 +245,7 @@ public class CustomerBean{
     }
 
     public void submit() {
-        setCustomertatus();
+        setPlanetatus();
         if (add == true) {
             add();
         } else if (update == true) {
@@ -271,22 +258,23 @@ public class CustomerBean{
         isDisable = false;
         update = false;
         add = false;
-        cus = new Customer();
+        planmb = new Plane();
     }
 
-    public void setCustomertatus() {
+    public void setPlanetatus() {
         if (Status.equals("Enable")) {
-            cus.setStatus(1);
+            planmb.setStatus((short) 1);
         } else if (Status.equals("Disable")) {
-            cus.setStatus(0);
+            planmb.setStatus((short) 0);
         }
     }
 
-    public void getCustomertatus() {
-        if (cus.getStatus() == 0) {
+    public void getPlanetatus() {
+        if (planmb.getStatus() == 0) {
             Status = "Disable";
-        } else if (cus.getStatus() == 1) {
+        } else if (planmb.getStatus() == 1) {
             Status = "Enable";
         }
     }
+    
 }

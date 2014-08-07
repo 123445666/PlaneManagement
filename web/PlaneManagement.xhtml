@@ -5,60 +5,148 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:f="http://java.sun.com/jsf/core">
+    <!--xmlns:pe="http://primefaces.org/ui/extensions">-->
     <h:head>
-        <title>Quản lý máy bay</title>
+        <title>JSF in VTCA</title>
+        <!--<h:outputStylesheet library="css" name="cssLayout.css"/>-->
     </h:head>
     <h:body>
-       <ui:composition template="./template.xhtml">
+        <ui:composition template="./template.xhtml">
             <ui:define name="content">
                 <p:growl id="growl" autoUpdate="true" showDetail="true"/>
-                <h:form id="frm_register">
-                    <h1 align="center" style="color: red">USERS MANAGEMENT</h1>
-                    <p:commandLink value="Đăng ký" onclick="dlg1.show()"/>
-                    <p:commandLink value="Đăng nhập" onclick="dlglogin.show()"/>
+                <h:form id="form_detail">
+                    <p:panel id="pn_01" style="width: 910px;background: azure;alignment-adjust: central">
+                        <p:commandButton id="btnUpdate" value="Sửa" style="width: 100px" actionListener="#{planeBean.updateclick()}" oncomplete="dlgedit.show()" update=":frm_plane_edit:pg_edit_01">
+                        </p:commandButton>
+                        <p:commandButton id="btnsubmit2" value="Thêm" style="width: 100px" actionListener="#{planeBean.clearValue()}" oncomplete="dlgadd.show()" update=":frm_plane_add:pg_add_01"/>
+                        <p:commandButton id="btnDelete" value="Xóa" style="width: 100px" icon="ui-icon-script" onclick="id_dg.show()"  >
+                        </p:commandButton>
+                        <p:dataTable rowIndexVar="rowIndex" var="planmb2" value="#{planeBean.ls_planmb}"
+                                     emptyMessage="Chưa có bản ghi nào" id="dt_table"
+                                     selectionMode="single" selection="#{planeBean.selectedRow}"
+                                     rowKey="#{planmb2.id}" paginator="true" rows="10"
+                                     style="margin-top: 10px" >
+                            <p:ajax listener="#{planeBean.onRowSelect}" event="rowSelect" />
+                            <f:facet name="header">  
+                                Danh sách máy bay
+                            </f:facet>
+                            <p:column style="width: 50px">
+                                <f:facet name="header">
+                                    STT
+                                </f:facet>
+                                <h:outputText value="#{rowIndex+1}" style="alignment-adjust: central"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    Kiểu máy bay
+                                </f:facet>
+                                <h:outputText value="#{planmb2.type}"/>
+                            </p:column>
+
+                            <p:column>
+                                <f:facet name="header">
+                                    Độ dài
+                                </f:facet>
+                                <h:outputText value="#{planmb2.lenght}"/>
+                            </p:column>  
+                            <p:column>
+                                <f:facet name="header">
+                                    Độ rộng
+                                </f:facet>
+                                <h:outputText value="#{planmb2.weight}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    Màu sắc
+                                </f:facet>
+                                <h:outputText value="#{planmb2.color}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    Chỗ ngồi
+                                </f:facet>
+                                <h:outputText value="#{planmb2.seats}"/>
+                            </p:column>
+                             <p:column>
+                                <f:facet name="header">
+                                    Mô tả
+                                </f:facet>
+                                 <h:outputText value="#{planmb2.description}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    Trạng thái
+                                </f:facet>
+                                <h:outputText value="#{planeBean.showPlaneStatus(planmb2.status)}"/>
+                            </p:column>  
+                        </p:dataTable>
+                    </p:panel>
+                    <p:confirmDialog id="dg" message="Bạn có chắc chắn muốn xóa máy bay này không?" widgetVar="id_dg" showEffect="fade" hideEffect="explode">
+                        <p:commandButton value="Yes"  actionListener="#{planeBean.delete()}" oncomplete="id_dg.hide()" update=":form_detail:pn_01"/>
+                        <p:commandButton value="No"  styleClass="ui-confirmdialog-no" icon="ui-icon-close" oncomplete="id_dg.hide()" />
+                    </p:confirmDialog>
                 </h:form>
-                <p:dialog id="user" header="Đăng ký" widgetVar="dlg1" showEffect="explode" hideEffect="bounce" height="200">
-                    <h:form id="frm_register_detail">
-                        <h:panelGrid columns="4" id="pg_01" style="alignment-adjust: central">
-                            <h:outputLabel value="Username:*"/>
-                            <p:inputText id="uname" value="#{userRegisterBean.user.username}" 
-                                         size="20">
+
+                <p:dialog id="planeedit" header="Thay đổi thông tin máy bay" widgetVar="dlgedit" showEffect="explode" hideEffect="bounce" height="200">
+                    <h:form id="frm_plane_edit">
+                        <h:panelGrid columns="4" id="pg_edit_01" style="alignment-adjust: central">
+                            <h:outputLabel value="Kiểu máy bay : *"/>
+                            <p:inputText id="type" value="#{planeBean.planmb.type}">
                             </p:inputText>
-                            <h:outputLabel value="Password:*"/>
-                            <p:password id="pass" value="#{userRegisterBean.user.password}"></p:password>
-                            <h:outputLabel value="Nhắc lại Password:*"/>
-                            <p:password id="repass" value="#{userRegisterBean.checkpassword}"></p:password>
-                            <h:outputLabel value="ID Customer:"/>
-                            <p:inputText id="IdCus" value="#{userRegisterBean.user.idCustomer}" 
-                                         size="20">
+                            <h:outputLabel value="Độ dài:"/>
+                            <p:inputText id="lenght" value="#{planeBean.planmb.lenght}"></p:inputText>
+                            <h:outputLabel value="Độ rộng:"/>
+                            <p:inputText id="weight" value="#{planeBean.planmb.weight}"></p:inputText>
+                            <h:outputLabel value="Màu sắc: "/>
+                            <p:inputText id="color" value="#{planeBean.planmb.color}">
                             </p:inputText>
-                            <h:outputLabel value="Trạng thái:"/>
-                            <p:selectOneMenu id="status" value="#{userRegisterBean.status}" effect="fold" editable="true">
+                            <h:outputLabel value="Chỗ ngồi"/>
+                            <p:inputText id="seats" value="#{planeBean.planmb.seats}">
+                            </p:inputText>
+                            <h:outputLabel value="Mô tả"/>
+                            <p:inputText id="description" value="#{planeBean.planmb.description}">
+                            </p:inputText>
+                            <h:outputLabel value="Status:"/>
+                            <p:selectOneMenu id="status" value="#{planeBean.status}" effect="fade" editable="true">
                                 <f:selectItem itemLabel="Enable" itemValue="1"/>
                                 <f:selectItem itemLabel="Disable" itemValue="0"/>
                             </p:selectOneMenu>
                         </h:panelGrid>
-                        <p:commandButton id="btnsubmit" value="Đăng ký" style="width: 100px" actionListener="#{userRegisterBean.add()}" onclick="dlg1.close()"/>
-                        <p:commandButton id="btnreset" value="Hủy" style="width: 100px" actionListener="#{userRegisterBean.reSet()}" oncomplete="dlg1.hide()" update=":frm_register_detail:pg_01"/>
+                        <p:commandButton id="btnsubmit" value="Lưu lại" style="width: 100px" actionListener="#{planeBean.submit()}" onclick="dlgedit.close()" update=":form_detail:pn_01,:growl"/>
+                        <p:commandButton id="btnreset" value="Hủy" style="width: 100px" actionListener="#{planeBean.reSet()}" update=":frm_plane_edit:pg_edit_01" onclick="dlgedit.hide()"/>
                     </h:form>
-                </p:dialog>   
-                <p:dialog id="login" header="Đăng nhập" widgetVar="dlglogin" showEffect="explode" hideEffect="bounce" height="200">
-                    <h:form id="frm_login_detail">
-                        <h:panelGrid columns="2" id="pg_01" style="alignment-adjust: central">
-                            <h:outputLabel value="Username:*"/>
-                            <p:inputText id="uname" value="#{usersLoginBean.user.username}" 
-                                         size="20">
+                </p:dialog>
+                <p:dialog id="planeadd" header="Thêm máy bay mới" widgetVar="dlgadd" showEffect="explode" hideEffect="explode" height="200">
+                    <h:form id="frm_plane_add">
+                        <h:panelGrid columns="4" id="pg_add_01" style="alignment-adjust: central">
+                             <h:outputLabel value="Kiểu máy bay : *"/>
+                            <p:inputText id="type" value="#{planeBean.planmb.type}">
                             </p:inputText>
-                            <h:outputLabel value="Password:*"/>
-                            <p:password id="pass" value="#{usersLoginBean.user.password}"></p:password>
-                            
+                            <h:outputLabel value="Độ dài:"/>
+                            <p:inputText id="lenght" value="#{planeBean.planmb.lenght}"></p:inputText>
+                            <h:outputLabel value="Độ rộng:"/>
+                            <p:inputText id="weight" value="#{planeBean.planmb.weight}"></p:inputText>
+                            <h:outputLabel value="Màu sắc: "/>
+                            <p:inputText id="color" value="#{planeBean.planmb.color}">
+                            </p:inputText>
+                            <h:outputLabel value="Chỗ ngồi"/>
+                            <p:inputText id="seats" value="#{planeBean.planmb.seats}">
+                            </p:inputText>
+                            <h:outputLabel value="Mô tả"/>
+                            <p:inputText id="description" value="#{planeBean.planmb.description}">
+                            </p:inputText>
+                            <h:outputLabel value="Status:"/>
+                            <p:selectOneMenu id="status" value="#{planeBean.status}" effect="fade" editable="true">
+                                <f:selectItem itemLabel="Enable" itemValue="1"/>
+                                <f:selectItem itemLabel="Disable" itemValue="0"/>
+                            </p:selectOneMenu>
                         </h:panelGrid>
-                        <p:commandButton id="btnsubmit" value="Đăng nhập" style="width: 100px" actionListener="#{usersLoginBean.login()}" oncomplete="dlglogin.close()"/>
-                        <p:commandButton id="btnreset" value="Hủy" style="width: 100px" onclick="dlglogin.close()" />
+                        <p:commandButton id="btnsubmit1" value="Lưu lại" style="width: 100px" actionListener="#{planeBean.submit()}" onclick="dlgedit.close()" update=":form_detail:pn_01,:growl"/>
+                        <p:commandButton id="btnreset1" value="Hủy" style="width: 100px" actionListener="#{planeBean.reSet()}" update=":frm_plane_add:pg_add_01"/>
                     </h:form>
                 </p:dialog>
             </ui:define>
         </ui:composition>
-    </h:body>
+    </h:body>   
 </html>
 
